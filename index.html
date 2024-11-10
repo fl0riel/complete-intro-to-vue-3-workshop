@@ -1,10 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body></body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matrix</title>
+</head>
+
+<body>
+  <div id="app">
+    <p v-if="characterList.length === 0">There is no characters</p>
+    <ul v-else>
+      <li v-for="(character, index) in characterList">
+        <p>{{character.name}} {{character.age}}</p> <input type="number" :value="character.age"
+          @input="changeAge(index, $event)">
+        <br>
+        <button type="button" v-if="!hasLike(character.name)" @click="addLike(index)">Like</button>
+        <button type="button" v-else @click="deleteLike(index)">Dislike</button>
+        <br>
+        <span>Cats age: {{(character.age-2) * 4 + 24}}</span>
+      </li>
+    </ul>
+    <input type="text" v-model="newCharacter.name" @keyup.enter="addNewCharacter"><button type="button"
+      @click="addNewCharacter">Add</button>
+    <p v-if="characterError">This character already exist</p>
+    <p><span v-for="(name, index) in favoriteList">{{name}}<span v-if="favoriteList.length - 1 !== index">,
+        </span></span></p>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    Vue.createApp({
+      data: () => ({
+        characterList: [
+          { name: 'Neo', age: 30 },
+          { name: 'Trinity', age: 28 },
+          { name: 'Morpheus', age: 55 },
+          { name: 'Architect', age: 184 },
+        ],
+        favoriteList: [],
+        newCharacter: { name: '', age: 33 },
+        characterError: false,
+      }),
+      methods: {
+        changeAge(index, event) {
+          const character = this.characterList.find((element, idx) => idx === index);
+
+          character.age = event.target.value;
+        },
+        addLike(index) {
+          const characterName = this.characterList[index];
+          if (characterName) {
+            const found = characterName.name;
+            if (!this.favoriteList.find((el) => el === found)) {
+              this.favoriteList.push(found);
+            }
+          }
+          return false;
+        },
+        deleteLike(index) {
+          const characterName = this.characterList[index];
+          if (characterName) {
+            const found = characterName.name;
+            const foundFavEl = this.favoriteList.find((el) => el === found)
+            if (foundFavEl) {
+              const index = this.favoriteList.findIndex(el => el === foundFavEl);
+              this.favoriteList.splice(index, 1);
+            }
+          }
+        },
+        hasLike(name) {
+          const found = this.favoriteList.find(el => el === name);
+          return found ? true : false;
+        },
+        addNewCharacter() {
+          if (this.newCharacter.name.length === 0) {
+            return;
+          }
+          const found = this.characterList.find((el) => el.name === this.newCharacter.name);
+          if (!found) {
+            this.characterList.push(this.newCharacter);
+            this.newCharacter = { name: '', age: 33 };
+            this.characterError = false;
+          } else {
+            this.characterError = true;
+          }
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+
 </html>
