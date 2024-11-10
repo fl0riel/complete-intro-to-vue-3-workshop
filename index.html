@@ -14,7 +14,7 @@
     <ul v-else>
       <li v-for="(character, index) in characterList">
         <p>{{character.name}} {{character.age}}</p> <input type="number" :value="character.age"
-          @input="changeAge(index, $event)">
+          @input="changeAge(index, $event)"> <input type="checkbox" v-model="character.isOnline">
         <br>
         <button type="button" v-if="!hasLike(character.name)" @click="addLike(index)">Like</button>
         <button type="button" v-else @click="deleteLike(index)">Dislike</button>
@@ -25,23 +25,38 @@
     <input type="text" v-model="newCharacter.name" @keyup.enter="addNewCharacter"><button type="button"
       @click="addNewCharacter">Add</button>
     <p v-if="characterError">This character already exist</p>
-    <p><span v-for="(name, index) in favoriteList">{{name}}<span v-if="favoriteList.length - 1 !== index">,
-        </span></span></p>
+    <p>
+      <span v-for="(name, index) in favoriteList">{{name}}
+        <span v-if="favoriteList.length - 1 !== index">, </span>
+      </span>
+    </p>
+    <p v-if="isAgentOnline">Agent is online</p>
+    <h2 v-if="isMafiaOnline">Mafia is online, RUN!!!!!</h2>
   </div>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
     Vue.createApp({
       data: () => ({
         characterList: [
-          { name: 'Neo', age: 30 },
-          { name: 'Trinity', age: 28 },
-          { name: 'Morpheus', age: 55 },
-          { name: 'Architect', age: 184 },
+          { name: 'Neo', age: 30, isOnline: true, },
+          { name: 'Trinity', age: 28, isOnline: false, },
+          { name: 'Morpheus', age: 55, isOnline: false, },
+          { name: 'Architect', age: 184, isOnline: true, },
+          { name: 'Smith', age: 1004, isOnline: true, },
         ],
         favoriteList: [],
         newCharacter: { name: '', age: 33 },
         characterError: false,
+        isMafiaOnline: false
       }),
+      computed: {
+        isAgentOnline() {
+          return this.characterList.find(el => el.isOnline === true && el.name === 'Smith') ? true : false;
+        }
+      },
+      created() {
+        this.watchAgentsOnline(this.characterList);
+      },
       methods: {
         changeAge(index, event) {
           const character = this.characterList.find((element, idx) => idx === index);
@@ -80,12 +95,31 @@
           const found = this.characterList.find((el) => el.name === this.newCharacter.name);
           if (!found) {
             this.characterList.push(this.newCharacter);
-            this.newCharacter = { name: '', age: 33 };
+            this.newCharacter = { name: '', age: 33, isSuperUser: false };
             this.characterError = false;
           } else {
             this.characterError = true;
           }
+        },
+        watchAgentsOnline(characterList) {
+          const smithOnline = characterList.find(el => el.name === 'Smith' && el.isOnline === true) ? true : false;
+          const architectOnline = characterList.find(el => el.name === 'Architect' && el.isOnline === true) ? true : false;
+
+          if (smithOnline && architectOnline) {
+            this.isMafiaOnline = true;
+          } else {
+            this.isMafiaOnline = false;
+          }
         }
+      },
+      watch: {
+        characterList: {
+          handler(newValue) {
+            this.watchAgentsOnline(newValue);
+          },
+          deep: true
+        }
+
       }
     }).mount('#app');
   </script>
