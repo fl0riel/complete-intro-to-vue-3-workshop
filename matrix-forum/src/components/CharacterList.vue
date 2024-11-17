@@ -4,8 +4,14 @@ export default {
         characters: {
             type: Array,
             required: true
+        },
+        favoriteCharacters: {
+            type: Array,
+            required: false,
+            default: () => [],
         }
     },
+    emits: ['newCharacter', 'addLike', 'deleteLike', 'changeOnline'],
     data: () => ({
         newCharacter: { name: '', age: 33 },
         characterError: false,
@@ -27,13 +33,27 @@ export default {
             }
             const found = this.characters.find((el) => el.name === this.newCharacter.name);
             if (!found) {
-                //this.characters.push(this.newCharacter);
+                this.$emit('newCharacter', this.newCharacter);
                 this.newCharacter = { name: '', age: 33, isSuperUser: false };
                 this.characterError = false;
             } else {
                 this.characterError = true;
             }
         },
+        hasLike(name) {
+            const found = this.favoriteCharacters.find(el => el === name);
+            return found ? true : false;
+        },
+        handleAddLike(character) {
+            this.$emit('addLike', character);
+        },
+        handleDeleteLike(character) {
+            this.$emit('deleteLike', character);
+        },
+        handleOnlineChange(character, event) {
+            const payload = { character: character, onlineStatus: event.target.checked };
+            this.$emit('changeOnline', payload);
+        }
     },
 };</script>
 
@@ -42,14 +62,18 @@ export default {
     <ul v-else>
         <li v-for="(character, index) in characters" :key="`character-${index}`">
             <p>{{ character.name }} {{ character.age }}</p> <input type="number" :value="character.age"
-                @input="changeAge(index, $event)"> <input type="checkbox" v-model="character.isOnline">
+                @input="changeAge(index, $event)"> <input type="checkbox" :checked="character.isOnline"
+                v-on:change="handleOnlineChange(character, $event)">
             <br>
-            <!--<button type="button" v-if="!hasLike(character.name)" @click="addLike(index)">Like</button>
-            <button type="button" v-else @click="deleteLike(index)">Dislike</button>-->
+            <button type="button" v-if="!hasLike(character.name)" @click="handleAddLike(character)">Like</button>
+            <!-- -->
+            <button type="button" v-else @click="handleDeleteLike(character)">Dislike</button>
             <br>
             <span>Cats age: {{ (character.age - 2) * 4 + 24 }}</span>
+
         </li>
     </ul>
+    <button @click="handleClick">OK</button>
     <input type="text" v-model="newCharacter.name" @keyup.enter="addNewCharacter"><button type="button"
         @click="addNewCharacter">Add</button>
     <p v-if="characterError">This character already exist</p>
