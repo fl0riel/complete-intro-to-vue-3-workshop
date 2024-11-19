@@ -1,5 +1,10 @@
 <script>
+import BaseButton from './BaseButton.vue';
+
 export default {
+    components: {
+        BaseButton
+    },
     props: {
         characters: {
             type: Array,
@@ -65,9 +70,9 @@ export default {
                 @input="changeAge(index, $event)"> <input type="checkbox" :checked="character.isOnline"
                 v-on:change="handleOnlineChange(character, $event)">
             <br>
-            <button type="button" v-if="!hasLike(character.name)" @click="handleAddLike(character)">Like</button>
-            <!-- -->
-            <button type="button" v-else @click="handleDeleteLike(character)">Dislike</button>
+            <BaseButton v-if="!hasLike(character.name)" @click="handleAddLike(character)">Like</BaseButton>
+            <BaseButton v-else @click="handleDeleteLike(character)">Dislike</BaseButton>
+
             <br>
             <span>Cats age: {{ (character.age - 2) * 4 + 24 }}</span>
 

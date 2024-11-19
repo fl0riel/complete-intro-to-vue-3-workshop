@@ -2,12 +2,14 @@
 import CharacterList from './components/CharacterList.vue';
 import FavoriteList from './components/FavoriteList.vue';
 import MafiaAlert from './components/MafiaAlert.vue';
+import MainLayout from './components/MainLayout.vue';
 
 export default {
   components: {
     CharacterList,
     FavoriteList,
-    MafiaAlert
+    MafiaAlert,
+    MainLayout
   },
   data: () => ({
     characterList: [
@@ -43,9 +45,9 @@ export default {
       }
     },
     onChangeOnline(payload) {
-      const {character, onlineStatus} = payload;
+      const { character, onlineStatus } = payload;
       const found = this.characterList.find((el) => el.name === character.name);
-      if(found) {
+      if (found) {
         found.isOnline = onlineStatus;
       }
     },
@@ -54,8 +56,17 @@ export default {
 </script>
 
 <template>
-  <CharacterList :characters="characterList" :favoriteCharacters="favoriteList" @new-character="onNewCharacter"
-    @add-like="onAddLike" @delete-like="onDeleteLike" @changeOnline="onChangeOnline"/>
-  <FavoriteList :favoriteCharacters="favoriteList" />
-  <MafiaAlert :characters="characterList" />
+  <MainLayout>
+    <template v-slot:header>
+      <h1>Matrix revolution</h1>
+    </template>
+    <template v-slot:main>
+      <CharacterList :characters="characterList" :favoriteCharacters="favoriteList" @new-character="onNewCharacter"
+        @add-like="onAddLike" @delete-like="onDeleteLike" @changeOnline="onChangeOnline" />
+      <FavoriteList :favoriteCharacters="favoriteList" />
+    </template>
+    <template v-slot:footer>
+      <MafiaAlert :characters="characterList" />
+    </template>
+  </MainLayout>
 </template>
