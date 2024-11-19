@@ -20,6 +20,7 @@ export default {
       { name: 'Smith', age: 1004, isOnline: true, },
     ],
     favoriteList: [],
+    pokemons: [1, 2, 3]
   }),
   methods: {
     onNewCharacter(newCharacter) {
@@ -51,6 +52,12 @@ export default {
         found.isOnline = onlineStatus;
       }
     },
+    async fetchPokemon() {
+      this.pokemons = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151").then((response) => response.json());
+    }
+  },
+  created() {
+    this.fetchPokemon();
   }
 };
 </script>
@@ -67,6 +74,8 @@ export default {
     </template>
     <template v-slot:footer>
       <MafiaAlert :characters="characterList" />
+      <p>Pokemons:</p>
+      <div> {{ pokemons }}</div>
     </template>
   </MainLayout>
 </template>
