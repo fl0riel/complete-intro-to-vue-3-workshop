@@ -3,13 +3,15 @@ import CharacterList from './components/CharacterList.vue';
 import FavoriteList from './components/FavoriteList.vue';
 import MafiaAlert from './components/MafiaAlert.vue';
 import MainLayout from './components/MainLayout.vue';
+import Pokemons from './components/pokemons.vue';
 
 export default {
   components: {
     CharacterList,
     FavoriteList,
     MafiaAlert,
-    MainLayout
+    MainLayout,
+    Pokemons
   },
   data: () => ({
     characterList: [
@@ -19,8 +21,7 @@ export default {
       { name: 'Architect', age: 184, isOnline: true, },
       { name: 'Smith', age: 1004, isOnline: true, },
     ],
-    favoriteList: [],
-    pokemons: [1, 2, 3]
+    favoriteList: []
   }),
   methods: {
     onNewCharacter(newCharacter) {
@@ -52,12 +53,6 @@ export default {
         found.isOnline = onlineStatus;
       }
     },
-    async fetchPokemon() {
-      this.pokemons = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151").then((response) => response.json());
-    }
-  },
-  created() {
-    this.fetchPokemon();
   }
 };
 </script>
@@ -74,8 +69,11 @@ export default {
     </template>
     <template v-slot:footer>
       <MafiaAlert :characters="characterList" />
-      <p>Pokemons:</p>
-      <div> {{ pokemons }}</div>
+      <Suspense>
+        <Pokemons />
+
+        <template v-slot:fallback>Loading pokemons...</template>
+      </Suspense>
     </template>
   </MainLayout>
 </template>
