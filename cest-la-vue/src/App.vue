@@ -42,7 +42,11 @@ export default {
       <a href="#" @click.prevent="showUsersPage">Users</a>
     </nav>
   </header>
-  <component :is="renderComponent" />
+
+  <Suspense>
+    <component :is="renderComponent" />
+    <template v-slot:fallback>Loading users...</template>
+  </Suspense>
 </template>
 
 <style>
