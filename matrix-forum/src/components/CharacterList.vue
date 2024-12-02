@@ -1,5 +1,6 @@
 <script>
 import BaseButton from './BaseButton.vue';
+import { useFavoriteList } from '@/composables/useFavoriteList';
 
 export default {
     components: {
@@ -9,14 +10,29 @@ export default {
         characters: {
             type: Array,
             required: true
-        },
-        favoriteCharacters: {
-            type: Array,
-            required: false,
-            default: () => [],
         }
     },
-    emits: ['newCharacter', 'addLike', 'deleteLike', 'changeOnline'],
+    emits: ['newCharacter', 'changeOnline'],
+    setup() {
+        const {favoriteList, addToFavoriteList, removeFromFavoriteList} = useFavoriteList();
+
+        function handleAddLike(character) {
+            addToFavoriteList(character.name);
+        }
+        function handleDeleteLike(character) {
+            removeFromFavoriteList(character.name);
+        }
+        function hasLike(name) {
+            const found = favoriteList.value.find(el => el === name);
+            return found ? true : false;
+        }
+
+        return {
+            handleAddLike,
+            handleDeleteLike,
+            hasLike
+        }
+    },
     data: () => ({
         newCharacter: { name: '', age: 33 },
         characterError: false,
@@ -44,16 +60,6 @@ export default {
             } else {
                 this.characterError = true;
             }
-        },
-        hasLike(name) {
-            const found = this.favoriteCharacters.find(el => el === name);
-            return found ? true : false;
-        },
-        handleAddLike(character) {
-            this.$emit('addLike', character);
-        },
-        handleDeleteLike(character) {
-            this.$emit('deleteLike', character);
         },
         handleOnlineChange(character, event) {
             const payload = { character: character, onlineStatus: event.target.checked };

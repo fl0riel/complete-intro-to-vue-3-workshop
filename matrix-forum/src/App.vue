@@ -20,31 +20,11 @@ export default {
       { name: 'Morpheus', age: 55, isOnline: false, },
       { name: 'Architect', age: 184, isOnline: true, },
       { name: 'Smith', age: 1004, isOnline: true, },
-    ],
-    favoriteList: []
+    ]
   }),
   methods: {
     onNewCharacter(newCharacter) {
       this.characterList.push(newCharacter);
-    },
-    onAddLike(character) {
-      if (character) {
-        const found = character.name;
-        if (!this.favoriteList.find((el) => el === found)) {
-          this.favoriteList.push(found);
-        }
-      }
-      return false;
-    },
-    onDeleteLike(character) {
-      if (character) {
-        const found = character.name;
-        const foundFavEl = this.favoriteList.find((el) => el === found)
-        if (foundFavEl) {
-          const index = this.favoriteList.findIndex(el => el === foundFavEl);
-          this.favoriteList.splice(index, 1);
-        }
-      }
     },
     onChangeOnline(payload) {
       const { character, onlineStatus } = payload;
@@ -63,9 +43,8 @@ export default {
       <h1>Matrix revolution</h1>
     </template>
     <template v-slot:main>
-      <CharacterList :characters="characterList" :favoriteCharacters="favoriteList" @new-character="onNewCharacter"
-        @add-like="onAddLike" @delete-like="onDeleteLike" @changeOnline="onChangeOnline" />
-      <FavoriteList :favoriteCharacters="favoriteList" />
+      <CharacterList :characters="characterList" @new-character="onNewCharacter" @changeOnline="onChangeOnline" />
+      <FavoriteList />
     </template>
     <template v-slot:footer>
       <MafiaAlert :characters="characterList" />
