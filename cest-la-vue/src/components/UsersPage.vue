@@ -19,13 +19,14 @@ state.userList = await fetch("https://jsonplaceholder.typicode.com/users").then(
     </main>
 </template>
 
-<style>
+<style scoped>
 main {
     display: flex;
     justify-content: center;
     flex-direction: column;
     max-width: 420px;
     margin: 0 auto;
+    background-color: #cccccc;
 }
 
 main h1 {

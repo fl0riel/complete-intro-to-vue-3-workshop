@@ -1,4 +1,5 @@
 <script>
+import main from './assets/main.css';
 import HomePage from "./components/HomePage.vue";
 import LoginPage from "./components/LoginPage.vue";
 import UsersPage from "./components/UsersPage.vue";
@@ -49,13 +50,7 @@ export default {
   </Suspense>
 </template>
 
-<style>
-* {
-  box-sizing: border-box;
-  font-family: "Inter", sans-serif;
-  margin: 0;
-  padding: 0;
-}
+<style >
 
 .header {
   display: flex;
