@@ -11,7 +11,7 @@ const mainBgColor = computed(() => {
   }
 });
 
-email.value.length+=1
+email.value = email.value.length + 1;
 
 
 const deg = computed(() => {

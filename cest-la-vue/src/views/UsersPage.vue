@@ -1,5 +1,5 @@
 <script setup>
-import UserCard from './UserCard.vue';
+import UserCard from '../components/UserCard.vue';
 import { reactive } from 'vue';
 
 const state = reactive({

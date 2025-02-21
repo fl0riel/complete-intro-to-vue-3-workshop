@@ -1,35 +1,5 @@
-<script>
-import main from './assets/main.css';
-import HomePage from "./components/HomePage.vue";
-import LoginPage from "./components/LoginPage.vue";
-import UsersPage from "./components/UsersPage.vue";
-
-export default {
-  components: {
-    HomePage,
-    LoginPage,
-    UsersPage,
-  },
-  data: () => ({
-    currentPage: "Home",
-  }),
-  computed: {
-    renderComponent() {
-      return this.currentPage + "Page";
-    },
-  },
-  methods: {
-    showHomePage() {
-      this.currentPage = "Home";
-    },
-    showLoginPage() {
-      this.currentPage = "Login";
-    },
-    showUsersPage() {
-      this.currentPage = "Users";
-    }
-  },
-};
+<script setup>
+import './assets/main.css';
 </script>
 
 <template>
@@ -38,14 +8,14 @@ export default {
       <img src="@/assets/vue-heart.png" width="30" />C'est La Vue
     </span>
     <nav class="nav">
-      <a href="#" @click.prevent="showHomePage">Home</a>
-      <a href="#" @click.prevent="showLoginPage">Login</a>
-      <a href="#" @click.prevent="showUsersPage">Users</a>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/login">Login</RouterLink>
+      <RouterLink to="/users">Users</RouterLink>
     </nav>
   </header>
 
   <Suspense>
-    <component :is="renderComponent" />
+    <RouterView />
     <template v-slot:fallback>Loading users...</template>
   </Suspense>
 </template>
